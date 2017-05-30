@@ -1,0 +1,33 @@
+@(item: Generales)
+
+  Info: @item.fechai @item.fechaf @item.responsable @item.nombre_proyecto
+    <body style="background-color:	grey">
+        <h1 style="text-align: center;">Prueba App Web</h1> <!-- header-->
+        <p>El objetivo de esta aplicación consiste en sistematizar el proceso de calidad en instalaciones realizadas por Unión Eléctrica</p> <!-- paragraph-->
+        <br>
+        <p id="demo" style="text-align: center;"></p>
+        <p> <b>1. Ingrese la fecha de inicio de la actividad.</b></p>
+        <input type="Date" name="field1" id="Date1"/> <br><br>
+        <p><b>2. Ingrese la fecha de finalización de la actividad.</b></p>
+        <input type="Date" name="field2" id="Date2"/> <br>
+  @if(item.responsable.equals("admin1")){
+      <p>La loquita es admin</p>
+  } else {
+      <p>LA loquita no es admin</p>
+  }
+
+    <table>
+        <tr>
+            <th>Numero</th>
+            <th>Numero + 1</th>
+        </tr>
+        @for( i <- 0 to 10){
+            <tr>
+                <td>@i</td>
+                <td>@(i+1)</td>
+            </tr>
+        }
+    </table>
+
+
+

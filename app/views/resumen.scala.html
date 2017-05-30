@@ -1,0 +1,1084 @@
+@(arreglo:Array[Generales],arreglo2:Array[Generales],totalreg: Int, totalwl: Int,historicog:Array[Historico],historicowl:Array[Historico],historicomw:Array[Historico], historicodw:Array[Historico], sitios_ok :Int)
+
+@main(""){
+
+     <div id="total">
+        <div id="filtrar">
+            <br><br><br>
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Busqueda..">
+            </div>
+        <div id="tabla_filtrar">
+            <table class="table table-bordered" id="tabla2">
+
+                <tr class="header" id="header_tabla">
+                    <th>Responsable</th>
+                    <th>Site Name</th>
+                    <th>Línea</th>
+                    <th>Score</th>
+                    <th>Estado</th>
+                </tr>
+
+                @for(item <- historicog){
+                    <tr>
+                        <td>@item.responsable</td>
+                        <td>@item.sitio</td>
+                        <td>@item.linea</td>
+                        <td>@item.scoreo</td>
+                        @if(item.ifs == "1"){
+                        <td>Aprobado</td>
+                    }else{
+                        <td>No Aprobado</td>
+                    }
+
+                    </tr>
+                }
+            </table>
+        </div>
+         <br>
+        <div id="fechas_graficar">
+            <p id="frase">Seleccione las fechas de la semana 1, desde: </p>
+            <input type="date" id="fecha1"> hasta:
+            <input type="date" id="fecha2">
+            <br>
+            <p id="frase">Seleccione las fechas de la semana 2, desde: </p>
+            <input type="date" id="fecha3"> hasta:
+            <input type="date" id="fecha4">
+        </div>
+         <hr>
+  <div>
+    <input type="button" onclick="try1()" name="general" value="Ver historico General" id="btn_general">
+    <input type="button" onclick="grafico1()" value="Ver historico Wireless" id="btn_wl">
+    <input type="button" onclick="grafico2()" value="Ver historico Microondas" id="btn_mw">
+    <input type="button" onclick="grafico3()" value="Ver historico DWDM" id="btn_dw">
+      <p id="arregloo"></p>
+      <p id="date"></p>
+      <p id="date1"></p>
+   </div>
+    <br>
+   <div id="tt">
+
+      <table class="table table-bordered" id="tabla_res">
+        <tr>
+          <th>ITEM</th>
+          <th>PROMEDIO</th>
+        </tr>
+        <tr>
+          <td>Total Sitios</td>
+          <td id="totalreg" readonly=""></td>
+        </tr>
+        <tr>
+          <td>Score</td>
+          <td><input type="text" id="avg_scoreg" readonly></td>
+        </tr>
+        <tr>
+          <td>Aprobados</td>
+          <td><input type="text" id="here" readonly></td>
+        </tr>
+        <tr>
+          <td>Fallidos</td>
+          <td><input type="text" id="rel_items" readonly></td>
+        </tr>
+        <tr>
+          <td>Desempeño</td>
+          <td><input type="text" id="desemp" readonly></td>
+        </tr>
+
+      </table>
+   </div>
+    <div id="ttt">
+    <div id="linechart_material1"></div>
+    <div id="curve_chartsc"></div>
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <div id="chart_stack"></div>
+    <div id="chart_stack_p"></div>
+    <div id="test_bars"></div>
+    <div id="chart_anot"></div>
+        <br><br>
+     </div>
+
+  </div>
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script>
+    var cont=0;
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tabla2");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[2];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    //============================================   DWDM   ===============================================
+    function grafico3(){
+        // ---------------- VARIABLES PARA TABLA DE RESUMEN ----------------
+        var sitios_ok_dw=0;
+        var fallidos_dw=0;
+        var total_items_dw=0;
+        var total_dw=0;
+        var sumascore_dw=0;
+        var avgscore_dw=0;
+
+        @for(item<-historicodw){
+        total_dw++;
+        fallidos_dw = fallidos_dw+@item.no_fallidos; //Fallidos Microondas
+        total_items_dw = total_items_dw+@item.no_total; //Total items registrados
+        sumascore_dw = sumascore_dw+@item.scoreo;
+        if( (@item.ifs) == "1"){
+            sitios_ok_dw++;
+        }
+        }
+        avgscore_dw = sumascore_dw/total_dw;
+        console.log("Sitios aprobados mw: "+sitios_ok_dw);
+        console.log("Sitios aprobados mw: "+sitios_ok_dw);
+        document.getElementById("here").value = sitios_ok_dw+"/"+total_dw; //Relacion aprobados / total
+        document.getElementById("rel_items").value = fallidos_dw+"/"+total_items_dw; // Relacion items
+        document.getElementById("avg_scoreg").value = avgscore_dw;
+        document.getElementById("totalreg").innerHTML = total_dw;
+        document.getElementById('tabla2').style.cssText="visibility: visible";
+        document.getElementById("tabla_res").style.cssText="visibility: visible";
+
+        // FIN VARIABLES Y VISTAS TABLA RESUMEN
+        // ----------------INICIO GRÁFICAS --------------------
+
+        google.charts.load('current', {'packages':['corechart','annotationchart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            {//==== SCORE ====
+                var contdw0 = 0;
+                var datasc_dw = new google.visualization.DataTable();
+                datasc_dw.addColumn('number', 'Registros');
+                datasc_dw.addColumn('number', 'Score');
+
+
+                @for(item <- historicodw ){
+                datasc_dw.addRows([[contdw0, @item.scoreo]]);
+                contdw0++;
+                }
+
+                var optionsc = {
+                    title: 'Score DWDM',
+                    legend: {position: 'bottom'},
+                    curveType:'function'
+                };
+
+                var chartsc_dw = new google.visualization.ComboChart(document.getElementById('curve_chartsc'));
+
+                chartsc_dw.draw(datasc_dw, optionsc);
+            }
+            { //Stacked Column
+
+                var conteo_fallidos_dw=0;
+                var conteo_totales_dw=0;
+                @for(item <- historicodw ){
+                conteo_fallidos_dw = conteo_fallidos_dw+ @item.no_fallidos;
+                conteo_totales_dw = conteo_totales_dw + @item.no_total;
+                }
+                var datast = google.visualization.arrayToDataTable([
+                    ['Genre', 'Aprobados Actual', 'Fallidos'],
+                    ['items',(conteo_totales_dw-conteo_fallidos_dw),conteo_fallidos_dw]
+                ]);
+
+                var optionsst = {
+                    title:'RESULTADOS',
+                    width: 600,
+                    height: 400,
+                    legend: { position: 'top', maxLines: 3 },
+                    bar: { groupWidth: '80%' },
+                    isStacked: true
+                };
+
+                var chartst = new google.visualization.ColumnChart(document.getElementById('chart_stack'));
+                chartst.draw(datast, optionsst);
+            }
+            { //Annotation Chart
+                var full;
+                var split1, split2;
+                var splice1 , splice2;
+                var fechafull, fechacomp;
+                var d ,m ,y;
+                var c11=0;
+                var arr_fechas=[];
+                var arr_fallos=[];
+
+                @for(item <- historicodw ){ // For Fechas
+                arr_fallos[c11] = @item.no_fallidos;
+                full = "@item.fechareg";
+                split1 = full.split("");
+                split2 = full.split("");
+                splice1 = split1.splice(4,6);
+                splice2 = split2.splice(23,5);
+                fechafull = splice1.concat(splice2);
+                d = fechafull[4]+fechafull[5];
+                m = fechafull[0]+fechafull[1]+fechafull[2];
+                if(m=="Apr"){m="04";}
+                if(m=="May"){m="05";}
+                y = fechafull[7]+fechafull[8]+fechafull[9]+fechafull[10];
+                fechacomp = y+"-"+m+"-"+d;
+                arr_fechas[c11]= fechacomp;
+                c11++;
+                }
+                //var x = parseInt(Date.parse(arr_fechas[0]));
+                //console.log(x);
+                console.log(arr_fechas);
+                var fechar = document.getElementById("fecha1").value;
+                fechar = fechar.toString();
+                var test = fechar.split("-");
+                console.log(fechar);
+                console.log(test);
+                var div;
+                var date_mili=[];
+                var dif;
+                for(var c12 = 0; c12<arr_fechas.length; c12++ ){
+                    div = arr_fechas[c12].split("-");
+                    date_mili[c12]= parseInt(Date.parse(arr_fechas[c12]));
+                    console.log("Parse: "+date_mili);
+                }
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Date');
+                data.addColumn('number', 'Fallos');
+                data.addColumn('string', 'Titulo');
+                data.addColumn('string', 'Causa');
+                var s= "2314, 3, 15";
+                var x = parseInt(Date.parse(s));
+                console.log(x);
+
+                var c13=0;
+                @for(item <- historicodw){
+                data.addRows([[new Date(date_mili[c13]),arr_fallos[c13],"Causa: ", "@item.causa"]]);
+                c13++;
+                }
+                var chart = new google.visualization.AnnotationChart(document.getElementById('chart_anot'));
+
+                var options = {
+                    displayAnnotations: true
+                };
+
+                chart.draw(data, options);
+            }
+
+        }//FIN GRAFICAS
+
+    }
+
+    //============================================MICROWAVES===============================================
+    function grafico2(){
+
+        // ---------------- VARIABLES PARA TABLA DE RESUMEN ----------------
+        var sitios_ok_mw=0;
+        var fallidos_mw=0;
+        var total_items_mw=0;
+        var total_mw=0;
+        var sumascore_mw=0;
+        var avgscore_mw=0;
+
+        @for(item<-historicomw){
+        total_mw++;
+        fallidos_mw = fallidos_mw+@item.no_fallidos; //Fallidos Microondas
+        total_items_mw = total_items_mw+@item.no_total; //Total items registrados
+        sumascore_mw = sumascore_mw+@item.scoreo;
+            if( (@item.ifs) == "1"){
+                sitios_ok_mw++;
+            }
+        }
+        avgscore_mw = sumascore_mw/total_mw;
+        console.log("Sitios aprobados mw: "+sitios_ok_mw);
+        document.getElementById("here").value = sitios_ok_mw+"/"+total_mw; //Relacion aprobados / total
+        document.getElementById("rel_items").value = fallidos_mw+"/"+total_items_mw; // Relacion items
+        document.getElementById("avg_scoreg").value = avgscore_mw;
+        document.getElementById("totalreg").innerHTML = total_mw;
+        document.getElementById('tabla2').style.cssText="visibility: visible";
+        document.getElementById("tabla_res").style.cssText="visibility: visible";
+        // FIN VARIABLES Y VISTAS TABLA RESUMEN
+        // ----------------INICIO GRÁFICAS --------------------
+
+        google.charts.load('current', {'packages':['corechart','annotationchart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+                  {//==== SCORE ====
+                      var contmw0 = 0;
+                      var datasc_mw = new google.visualization.DataTable();
+                      datasc_mw.addColumn('number', 'Registros');
+                      datasc_mw.addColumn('number', 'Score');
+
+
+                      @for(item <- historicomw ){
+                      datasc_mw.addRows([[contmw0, @item.scoreo]]);
+                      contmw0++;
+                      }
+
+                      var optionsc = {
+                          title: 'Score Microondas',
+                          legend: {position: 'bottom'},
+                          curveType:'function'
+                      };
+
+                      var chartsc_mw = new google.visualization.ComboChart(document.getElementById('curve_chartsc'));
+
+                      chartsc_mw.draw(datasc_mw, optionsc);
+                  }
+                  { //Stacked Column
+
+                      var conteo_fallidos_mw=0;
+                      var conteo_totales_mw=0;
+                      @for(item <- historicomw ){
+                      conteo_fallidos_mw = conteo_fallidos_mw+ @item.no_fallidos;
+                      conteo_totales_mw = conteo_totales_mw + @item.no_total;
+                      }
+                      var datast = google.visualization.arrayToDataTable([
+                          ['Genre', 'Aprobados Actual', 'Fallidos'],
+                          ['items',(conteo_totales_mw-conteo_fallidos_mw),conteo_fallidos_mw]
+                      ]);
+
+                      var optionsst = {
+                          title:'RESULTADOS',
+                          width: 600,
+                          height: 400,
+                          legend: { position: 'top', maxLines: 3 },
+                          bar: { groupWidth: '80%' },
+                          isStacked: true
+                      };
+
+                      var chartst = new google.visualization.ColumnChart(document.getElementById('chart_stack'));
+                      chartst.draw(datast, optionsst);
+                  }
+                  { //Annotation Chart
+                      var full;
+                      var split1, split2;
+                      var splice1 , splice2;
+                      var fechafull, fechacomp;
+                      var d ,m ,y;
+                      var c11=0;
+                      var arr_fechas=[];
+                      var arr_fallos=[];
+
+                      @for(item <- historicomw ){ // For Fechas
+                      arr_fallos[c11] = @item.no_fallidos;
+                      full = "@item.fechareg";
+                      split1 = full.split("");
+                      split2 = full.split("");
+                      splice1 = split1.splice(4,6);
+                      splice2 = split2.splice(23,5);
+                      fechafull = splice1.concat(splice2);
+                      d = fechafull[4]+fechafull[5];
+                      m = fechafull[0]+fechafull[1]+fechafull[2];
+                      if(m=="Apr"){m="04";}
+                      if(m=="May"){m="05";}
+                      y = fechafull[7]+fechafull[8]+fechafull[9]+fechafull[10];
+                      fechacomp = y+"-"+m+"-"+d;
+                      arr_fechas[c11]= fechacomp;
+                      c11++;
+                      }
+                      //var x = parseInt(Date.parse(arr_fechas[0]));
+                      //console.log(x);
+                      console.log(arr_fechas);
+                      var fechar = document.getElementById("fecha1").value;
+                      fechar = fechar.toString();
+                      var test = fechar.split("-");
+                      console.log(fechar);
+                      console.log(test);
+                      var div;
+                      var date_mili=[];
+                      var dif;
+                      for(var c12 = 0; c12<arr_fechas.length; c12++ ){
+                          div = arr_fechas[c12].split("-");
+                          date_mili[c12]= parseInt(Date.parse(arr_fechas[c12]));
+                          console.log("Parse: "+date_mili);
+                      }
+                      var data = new google.visualization.DataTable();
+                      data.addColumn('date', 'Date');
+                      data.addColumn('number', 'Fallos');
+                      data.addColumn('string', 'Titulo');
+                      data.addColumn('string', 'Causa');
+                      var s= "2314, 3, 15";
+                      var x = parseInt(Date.parse(s));
+                      console.log(x);
+
+                      var c13=0;
+                      @for(item <- historicomw){
+                      data.addRows([[new Date(date_mili[c13]),arr_fallos[c13],"Causa: ", "@item.causa"]]);
+                      c13++;
+                      }
+                      var chart = new google.visualization.AnnotationChart(document.getElementById('chart_anot'));
+
+                      var options = {
+                          displayAnnotations: true
+                      };
+
+                      chart.draw(data, options);
+                  }
+
+              }
+
+    } // ---------------------------------FINALIZACION MICROWAVES------------------------------------------
+
+    //============================================WIRELESS=================================================
+          function grafico1(){
+        var suma_fallidos=0;
+        var suma_totales=0;
+        var sitios_ok_wl=0;
+        @for(item <- historicowl){
+        suma_fallidos = suma_fallidos+@item.no_fallidos;
+        suma_totales = suma_totales+@item.no_total;
+        console.log("aprobados: "+"@item.ifs");
+              if( (@item.ifs) == "1"){
+               sitios_ok_wl++;
+              }
+
+        }
+           document.getElementById("date").innerHTML=''; //Fechas para graficar
+           document.getElementById("desemp").value = "-"; //Desempeño
+           document.getElementById("here").value = sitios_ok_wl+"/"+"@totalwl"; //Relacion aprobados / total
+           document.getElementById("rel_items").value = suma_fallidos+"/"+suma_totales; // Relacion items
+           document.getElementById('tabla2').style.cssText="visibility: visible";
+           document.getElementById("tabla_res").style.cssText="visibility: visible";
+           document.getElementById("myInput").style.cssText="visibility: visible";
+           document.getElementById("fechas_graficar").style.cssText="visibility:hidden";
+           document.getElementById("chart_stack_p").innerHTML='';
+           document.getElementById('linechart_material1').innerHTML='';
+           document.getElementById('chart_stack').innerHTML='';
+           document.getElementById('test_bars').innerHTML='';
+            var contador =0;
+            var contadora=0;
+            var avg_scorewl =0;
+            var sum_scorewl=0;
+            var arreglo_codigo_item = [];
+            var countitem =0;
+
+            @for(item<-historicowl){
+            sum_scorewl = sum_scorewl+ @item.scoreo;
+            arreglo_codigo_item[countitem]= "@item.codigoItem".split(",");
+            countitem++;
+            }
+              var break1 =[];
+              var break2 = [];
+              var break3 = [];
+              for(var asd=0;asd<arreglo_codigo_item.length;asd++){
+                  break1[asd]=arreglo_codigo_item[asd].toString().split(",");
+                 console.log("break: "+break1[asd]);
+
+              }
+
+              var concat_arr = [];
+              console.log("Lenght break1: " + break1.length);
+              for(var i = 0; i < break1.length; i++){
+                  concat_arr = concat_arr.concat(break1[i]);
+              }
+
+              function conteo(arr) {
+                  var a = [], b = [], prev;
+
+                  arr.sort();
+                  for ( var i = 0; i < arr.length; i++ ) {
+                      if ( arr[i] !== prev ) {
+                          a.push(arr[i]);
+                          b.push(1);
+                      } else {
+                          b[b.length-1]++;
+                      }
+                      prev = arr[i];
+                  }
+
+                  return [a, b];
+              }
+
+              var res = conteo(concat_arr);
+              console.log(res[0] + " y " + res[1]);
+
+            avg_scorewl = sum_scorewl/@totalwl;
+
+            document.getElementById("avg_scoreg").value = avg_scorewl;
+            document.getElementById("totalreg").innerHTML = @totalwl;
+
+              google.charts.load('current', {'packages':['corechart','annotationchart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+                  {//==== SCORE ====
+                      var contadorb =0;
+                      var datasc = new google.visualization.DataTable();
+                      datasc.addColumn('number', 'Registros');
+                      datasc.addColumn('number', 'Score');
+
+
+                      @for(item <- historicowl ){
+                      contadorb++;
+                      datasc.addRows([[contadorb, @item.scoreo]]);
+                      }
+
+                      var options3 = {
+                          title: 'Score Wireless',
+                          legend: {position: 'bottom'},
+                          curveType:'function'
+                      };
+
+                      var chartsc = new google.visualization.ComboChart(document.getElementById('curve_chartsc'));
+
+                      chartsc.draw(datasc, options3);
+                  }
+                  { //Stacked Column
+
+                      var conteo_fallidos=0;
+                      var conteo_totales=0;
+                      @for(item <- historicowl ){
+                      conteo_fallidos = conteo_fallidos+ @item.no_fallidos;
+                      conteo_totales = conteo_totales + @item.no_total;
+                      }
+                      var datast = google.visualization.arrayToDataTable([
+                          ['Genre', 'Aprobados Actual', 'Fallidos'],
+                          ['items',(conteo_totales-conteo_fallidos),conteo_fallidos]
+                      ]);
+
+                      var optionsst = {
+                          title:'RESULTADOS',
+                          width: 600,
+                          height: 400,
+                          legend: { position: 'top', maxLines: 3 },
+                          bar: { groupWidth: '80%' },
+                          isStacked: true
+                      };
+
+                      var chartst = new google.visualization.ColumnChart(document.getElementById('chart_stack'));
+                      chartst.draw(datast, optionsst);
+                  }
+                  { //Annotation Chart
+                      var full;
+                      var split1, split2;
+                      var splice1 , splice2;
+                      var fechafull, fechacomp;
+                      var d ,m ,y;
+                      var c11=0;
+                      var arr_fechas=[];
+                      var arr_fallos=[];
+
+                      @for(item <- historicowl ){ // For Fechas
+                      arr_fallos[c11] = @item.no_fallidos;
+                      full = "@item.fechareg";
+                      split1 = full.split("");
+                      split2 = full.split("");
+                      splice1 = split1.splice(4,6);
+                      splice2 = split2.splice(23,5);
+                      fechafull = splice1.concat(splice2);
+                      d = fechafull[4]+fechafull[5];
+                      m = fechafull[0]+fechafull[1]+fechafull[2];
+                      if(m=="Apr"){m="04";}
+                      y = fechafull[7]+fechafull[8]+fechafull[9]+fechafull[10];
+                      fechacomp = y+"-"+m+"-"+d;
+                      arr_fechas[c11]= fechacomp;
+                      c11++;
+                      }
+                      //var x = parseInt(Date.parse(arr_fechas[0]));
+                      //console.log(x);
+                      console.log(arr_fechas);
+                      var fechar = document.getElementById("fecha1").value;
+                      fechar = fechar.toString();
+                      var test = fechar.split("-");
+                      console.log(fechar);
+                      console.log(test);
+                      var div;
+                      var date_mili=[];
+                      var dif;
+                      for(var c12 = 0; c12<arr_fechas.length; c12++ ){
+                          div = arr_fechas[c12].split("-");
+                          date_mili[c12]= parseInt(Date.parse(arr_fechas[c12]));
+                          console.log("Parse: "+date_mili);
+                      }
+                      var data = new google.visualization.DataTable();
+                      data.addColumn('date', 'Date');
+                      data.addColumn('number', 'Fallos');
+                      data.addColumn('string', 'Titulo');
+                      data.addColumn('string', 'Causa');
+                      var s= "2314, 3, 15";
+                      var x = parseInt(Date.parse(s));
+                      console.log(x);
+
+                      var c13=0;
+                      @for(item <- historicowl){
+                      data.addRows([[new Date(date_mili[c13]),arr_fallos[c13],"Causa: ", "@item.causa"]]);
+                      c13++;
+                      }
+
+                      /*
+                       data.addRows([
+                       [new Date(x) , 12400, undefined, undefined],
+                       [new Date(2314, 2, 16), 24045, 'Lalibertines', 'First encounter'],
+                       [new Date(2314, 2, 17), 35022, 'Lalibertines', 'They are very tall'],
+                       [new Date(2314, 2, 18), 12284, 'Lalibertines', 'Attack on our crew!'],
+                       [new Date(2314, 2, 19), 8476, 'Lalibertines', 'Heavy casualties'],
+                       [new Date(2314, 2, 20), 20600, 'Lalibertines', 'All crew lost'],
+                       [new Date(2314, 2, 23), 45600, 'Lalibertines', 'All crew lost']
+                       ]);*/
+
+
+                      var chart = new google.visualization.AnnotationChart(document.getElementById('chart_anot'));
+
+                      var options = {
+                          displayAnnotations: true
+                      };
+
+                      chart.draw(data, options);
+                  }
+
+
+
+              }
+
+          }
+    //============================================GENERAL=================================================
+          function try1(){
+              var suma_failed=0;
+              var suma_totalg = 0;
+              document.getElementById("date").innerHTML='';
+              document.getElementById("fechas_graficar").style.cssText="visibility:visible";
+              document.getElementById("chart_anot").style.cssText="visibility:hidden";
+              @for(item<-historicog){
+              suma_failed = suma_failed+ @item.no_fallidos;
+              suma_totalg = suma_totalg+@item.no_total;
+
+              }
+
+
+              document.getElementById("here").value = "@sitios_ok"+"/"+"@totalreg";
+              document.getElementById("rel_items").value = suma_failed+"/"+suma_totalg;
+              document.getElementById("curve_chartsc").innerHTML='';
+
+
+              var c14=0;
+              var calt =0;
+              var calt2 =0;
+              var calt3 =0;
+              var calt4=0;
+              var fechabd;
+              var fsp1,fsp2;
+              var sp,sp2;
+              var fechabdc;
+              var dia, mes, año;
+              var fecha_comp;
+              var fechas_bd=[];
+              var err_msg;
+
+                //Captura de fechas a comparar
+              var fechas1 = document.getElementById("fecha1").value.toString(); //Capture Date input semana 1 desde
+              var fechas3 = document.getElementById("fecha3").value.toString(); //Capture Date input semana 2 desde
+              var fechas2 = document.getElementById("fecha2").value.toString(); //Capture Date input semana 1 hasta
+              var fechas4 = document.getElementById("fecha4").value.toString(); //Capture Date input semana 2 hasta
+              var dias1 = fechas1.split("-");
+              var dias2 = fechas2.split("-");
+              var dias3 = fechas3.split("-");
+              var dias4 = fechas4.split("-");
+              console.log("Hola: "+dias1[1]);
+               arr_testing = [];
+               arr_testing2 = [];
+               arr_semana2d = [];
+               arr_semana2h = [];
+               var mesnum=0;
+
+              @for(item <- historicog ){ //Date transform from BD to strings
+                fechabd= "@item.fechareg";
+                fsp1 = fechabd.split("");
+                fsp2 = fechabd.split("");
+                sp = fsp1.splice(4,6);
+                sp2 = fsp2.splice(23,5);
+                fechabdc = sp.concat(sp2);
+                dia = (fechabdc[4] + fechabdc[5]);
+                mes = fechabdc[0]+fechabdc[1]+fechabdc[2];
+                if(mes=="Jan"){mesnum=1;}
+                 else if(mes=="Feb"){mesnum=2;}
+                 else if(mes=="Mar"){mesnum=3;}
+                 else if(mes=="Apr"){mesnum=4;}
+                 else if(mes=="May"){mesnum=5;}
+                 else if(mes=="Jun"){mesnum=6;}
+                 else if(mes=="Jul"){mesnum=7;}
+                 else if(mes=="Aug"){mesnum=8;}
+                 else if(mes=="Sep"){mesnum=9;}
+                 else if(mes=="Oct"){mesnum=10;}
+                 else if(mes=="Nov"){mesnum=11;}
+                 else{mesnum=12;}
+
+              if(dias1[1] == mesnum && dias2[1]==mesnum);{ // if same month 1 y 2
+                if( dia>=dias1[2] && dia<=dias2[2]){ //semana 1
+                    arr_testing[calt] = @item.no_fallidos;
+                    arr_testing2[calt] = @item.no_total;
+                    calt++;
+                } } //month fecha 1 y 2
+
+              if(dias3[1]== mesnum && dias4[1]==mesnum){  //if same month 3 y 4
+                if( dia>=dias3[2] && dia<=dias4[2]){ //semana 2
+                  arr_semana2d[calt2] = @item.no_fallidos;
+                  arr_semana2h[calt2] = @item.no_total;
+                  calt2++;
+              } } //month fecha 3 y 4
+
+              if(dias1[1]<dias2[1]){ //If month 1 != month 2
+
+              if(dia>=dias1[2] && dia<=31){
+                  console.log("cuentas");
+                  arr_testing[calt3]=@item.no_fallidos;
+                  arr_testing2[calt3] = @item.no_total;
+                  calt3++;
+
+              }
+              if(dia>=1 && dia<=dias2[2]){
+                  console.log("cuantas2");
+                  arr_testing[calt3]=@item.no_fallidos;
+                  arr_testing2[calt3]=@item.no_total;
+                  calt3++;
+
+              }
+          } // Cierre if meses diferentes
+
+              if(dias3[1]<dias4[1]){ //If month 3 != month 4
+
+                  if(dia>=dias3[2] && dia<=31){
+
+                      arr_semana2d[calt4]=@item.no_fallidos;
+                      arr_semana2h[calt4] = @item.no_total;
+                      calt4++;
+
+                  }
+                  if(dia>=1 && dia<=dias4[2]){
+
+                      arr_semana2d[calt4]=@item.no_fallidos;
+                      arr_semana2h[calt4]=@item.no_total;
+                      calt4++;
+
+                  }
+              } // Cierre if meses diferentes
+              if (dias1[1]>dias2[1]){err_msg="Error, fecha inicial debe ser anterior a la final";}
+              else if (dias1[1]==dias2[1]){if(dias1[2]>dias2[2]){err_msg="Error, fecha inicial debe ser anterior a la final";}}
+              else if (dias3[1]>dias4[1]){err_msg="Error, fecha inicial debe ser anterior a la final";}
+              else if (dias3[1]==dias4[1]){if(dias3[2]>dias4[2]){err_msg="Error, fecha inicial debe ser anterior a la final";}}
+              else if (dias1[1]>dias3[1]){err_msg="Error, fecha inicial debe ser anterior a la final";}
+              else if (dias2[1]>dias3[1]){err_msg="Error, fecha inicial debe ser anterior a la final";}
+              else{err_msg="ok";}
+
+
+                año = fechabdc[7]+fechabdc[8]+fechabdc[9]+fechabdc[10];
+                fecha_comp = año+"-"+mes+"-"+dia;
+                fechas_bd[c14]=fecha_comp;
+                c14++;
+              }
+
+
+
+              document.getElementById("date").innerHTML=err_msg;
+
+              console.log("testing1: "+arr_testing);
+              console.log("testing2: "+arr_testing2);
+              console.log("testing1: "+arr_semana2d);
+              console.log("testing2: "+arr_semana2h);
+              console.log("splice: "+sp);
+              console.log("splice2: "+sp2);
+              console.log("final: "+fechas_bd);
+
+              var contador =0;
+              var avg_score =0;
+              var sum_score=0;
+              var sum_indice =0;
+              var sum_otf =0;
+              var sum_ifs=0;
+              var avg_indice;
+              var avg_otf=0;
+              var avg_ifs=0;
+              var cnt =0;
+              var cnt2 =0;
+              var arreglo_avg_item=[];
+              @for(item<-historicog){
+              cnt++;
+            sum_score = sum_score+ @item.scoreo;
+                if(@item.ifs != "1"){
+                    cnt2++;
+                }
+            }
+            console.log(cnt2);
+            avg_score = sum_score/@totalreg;
+
+
+
+            document.getElementById("avg_scoreg").value = avg_score;
+            document.getElementById("totalreg").innerHTML = @totalreg;
+            document.getElementById("tabla_res").style.cssText = "visibility: visible";
+
+
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+                {//Tendencia
+                var contadort =0;
+                var datag = new google.visualization.DataTable();
+                datag.addColumn('number', 'Registros');
+                datag.addColumn('number', 'Score');
+                @for(item <- historicog){
+                contadort++;
+                datag.addRows([[contadort, @item.scoreo]]);
+                }
+
+                var optionsg = {
+                    title: 'Score General',
+                    legend: {position: 'bottom'},
+                    curveType:'function',
+                    vAxis:{
+                        viewWindow: {
+                            min:0, max: 100,
+                            color:'white'
+                        }
+                    }
+                };
+
+                var chartig = new google.visualization.ComboChart(document.getElementById('linechart_material1'));
+
+                chartig.draw(datag, optionsg);
+                }
+                { //Pareto general
+                    var contadort1=0;
+                    var contador2=0;
+                    var arr_prueba = [];
+                    var aux1=[];
+                    var aux2=[];
+                    var suma_conteo=0;
+
+                    var dataTitle1 = [ 'Codigos', 'Porcentaje', '' ];
+                    //var arreglo_code_item = (historicog(0).codigoItem)*10;
+                    //console.log("split: "+historicog(0).codigoItem);
+                    var arr_codigos=[];
+                    var arr_codigos_separados =[];
+                    var arr_concat_code = [];
+                    var arr_porc_sum=[];
+                    var conteo1=0;
+                    @for(item <- historicog){
+                    arr_codigos[conteo1]= "@item.codigoItem".split(",");
+                    conteo1++;
+                    }
+                    for(var aa=0;aa<arr_codigos.length;aa++){
+                        arr_codigos_separados[aa] = arr_codigos[aa].toString().split(",");
+                    }
+                    for(var ab=0; ab<arr_codigos_separados.length; ab++ ){
+                        arr_concat_code = arr_concat_code.concat(arr_codigos_separados[ab]);
+                    }
+                    console.log("concatenado: "+arr_concat_code);
+                    function conteo(arr) {
+                        var a = [], b = [], prev;
+
+                        arr.sort();
+                        for ( var i = 0; i < arr.length; i++ ) {
+                            if ( arr[i] !== prev ) {
+                                a.push(arr[i]);
+                                b.push(1);
+                            } else {
+                                b[b.length-1]++;
+                            }
+                            prev = arr[i];
+                        }
+
+                        return [a, b];
+                    }
+
+                    var res = conteo(arr_concat_code);
+                    console.log(res[0] + " y " + res[1]);
+                    aux1=res[0];
+                    aux2=res[1];
+                    console.log("codigos: "+ aux1);
+                    console.log("conteo: "+ aux2);
+                    var ccc=0;
+                    var aux3=[];
+                    var aux4=[];
+                    for(var af=0;af<aux1.length;af++){
+                        if(aux1[af]!=0){
+                            aux3[ccc]=aux1[af];
+                            aux4[ccc]=aux2[af];
+                            ccc++;
+                        }
+                    }
+                    console.log("long: "+aux1.length);
+                    console.log("long: "+aux3.length);
+                    for(var ac=0;ac<aux4.length;ac++){
+                        suma_conteo = suma_conteo+aux4[ac];
+                    }
+                    console.log("suma conteo: "+ suma_conteo);
+                    for(var ad=0;ad<aux4.length;ad++){
+                        arr_porc_sum[ad] = (aux4[ad]/suma_conteo)*100;
+                    }
+                    console.log("porcentajes: "+arr_porc_sum);
+
+
+                    for(var ae=0;ae<arr_porc_sum.length;ae++){
+                        arr_prueba[ae]= [aux3[ae],arr_porc_sum[ae]];
+                    }
+
+                    arr_prueba.sort( function(a,b) {
+                        return b[1] - a[1];
+                    });
+                    console.log(arr_prueba);
+                    var sum = [];
+                    var sum1 =0;
+                    for(row=0; row<arr_prueba.length-1; row++) {
+                        sum1+=arr_prueba[row][1];
+                    }
+                    console.log(sum1);
+                    var accum = 0;
+                    for(row1=0; row1<arr_prueba.length-1; row1++) {
+                        arr_prueba[row1].push( accum+100*arr_prueba[row1][1]/sum1 );
+                        accum = arr_prueba[row1][2];
+                    }
+                    console.log(arr_prueba);
+                    console.log("longitud: "+arr_prueba.length);
+
+
+                    arr_prueba.unshift( dataTitle1 );
+                    var datapareto = new google.visualization.DataTable();
+                    datapareto.addColumn('string','codigo');
+                    datapareto.addColumn('number','porcentaje');
+                    datapareto.addColumn('number','acumulado');
+
+                    var pareto_limit=0;
+                    if(arr_prueba.length<20){
+                        pareto_limit = arr_prueba.length-1;
+                    }else {
+                        pareto_limit=20;
+                    }
+
+                    for(var i=1;i<pareto_limit;i++){
+                        datapareto.addRows([[arr_prueba[i][0], arr_prueba[i][1], arr_prueba[i][2]]]);
+                    }
+
+
+                    //var data5 = google.visualization.arrayToDataTable(arr_prueba);
+
+                    var options5 = {
+                        title:  'Items fallidos',
+                        legend: { position: 'none' },         // no legend
+                        // Create two vertical axes taking its titles from the first row
+                        vAxes:[
+                            { title: arr_prueba[0][1], minValue: 0 },
+                            { title: arr_prueba[0][2], minValue: 0, maxValue: 100 }
+                        ],
+                        hAxis:  { title: arr_prueba[0][0] },
+                        //backgroundColor: {strokeWidth: 2 },   // to get a nice box
+                        seriesType: "bars", color:'red',                  // the standard chart type
+                        // the second data column should be of type 'line' and should be associated with the second vertical axis
+                        series: {1: {type: "line",color:'black'}}
+                    };
+
+                    // Note: this calls a ComboChart !!!
+                    var chart5 = new google.visualization.ComboChart(document.getElementById('test_bars'));
+                    chart5.draw(datapareto, options5);
+
+                }
+                { //Stacked Column
+                    var conteo_fallidos=0;
+                    var conteo_totales=0;
+                    var conteo_semana2f = 0;
+                    var conteo_semana2t = 0;
+                    /*for(item <- historicog ){
+                    conteo_fallidos = conteo_fallidos+ item.no_fallidos;
+                    conteo_totales = conteo_totales + item.no_total;
+                    }*/
+                    for(var c15=0; c15<arr_testing.length;c15++){
+                        conteo_fallidos = conteo_fallidos+arr_testing[c15];
+                        conteo_totales = conteo_totales+arr_testing2[c15];
+                    }
+                    for(var c16=0; c16<arr_semana2d.length;c16++){
+                        conteo_semana2f = conteo_semana2f+arr_semana2d[c16];
+                        conteo_semana2t = conteo_semana2t+arr_semana2h[c16];
+                    }
+
+                    var datast = google.visualization.arrayToDataTable([
+                        ['Genre', 'Aprobados semana 1', 'Fallidos semana 1', 'Aprobados semana 2', 'Fallidos semana 2'],
+                        ['semana 1',(conteo_totales-conteo_fallidos),conteo_fallidos,0,0],
+                        ['semana 2',0,0, (conteo_semana2t-conteo_semana2f),conteo_semana2f]
+                    ]);
+
+                    var optionsst = {
+                        title:'COMPARACIÓN',
+                        width: 600,
+                        height: 400,
+                        legend: { position: 'top', maxLines: 3 },
+                        bar: { groupWidth: '80%' },
+                        isStacked: true
+                    };
+
+                    var chartst = new google.visualization.ColumnChart(document.getElementById('chart_stack'));
+                    chartst.draw(datast, optionsst);
+                }
+                { //Stacked Column 2 PERCENT
+                    var conteo_fallidos_p=0;
+                    var conteo_totales_p=0;
+                    var conteo_semana2fp = 0;
+                    var conteo_semana2tp = 0;
+                    /*for(item <- historicog ){
+                     conteo_fallidos = conteo_fallidos+ item.no_fallidos;
+                     conteo_totales = conteo_totales + item.no_total;
+                     }*/
+                    for(var c15=0; c15<arr_testing.length;c15++){
+                        conteo_fallidos_p = conteo_fallidos_p+arr_testing[c15];
+                        conteo_totales_p = conteo_totales_p+arr_testing2[c15];
+                    }
+                    for(var c16=0; c16<arr_semana2d.length;c16++){
+                        conteo_semana2fp = conteo_semana2fp+arr_semana2d[c16];
+                        conteo_semana2tp = conteo_semana2tp+arr_semana2h[c16];
+                    }
+                    var sem1 = (conteo_fallidos_p*100)/conteo_totales_p;
+                    var sem2 = (conteo_semana2fp*100)/conteo_semana2tp;
+                    var a = 100-sem1;
+                    var b = 100-sem2;
+                    var fix = 0;
+                    if(a>b){
+                        console.log("Empeoro "+(a-b)+"%");
+                        fix = a-b;
+                        fix = fix.toFixed(2);
+                        document.getElementById("desemp").value = "Empeoro "+fix+"%";
+                    }
+                    if(a<b){
+                        console.log("Mejoro "+(b-a)+"%");
+                        fix = b-a;
+                        fix = fix.toFixed(2);
+                        document.getElementById("desemp").value = "Mejoro "+fix+"%";
+                    }
+
+                    var datastp = google.visualization.arrayToDataTable([
+                        ['Genre', 'Aprobados semana 1', 'Fallidos semana 1', 'Aprobados semana 2', 'Fallidos semana 2'],
+                        ['semana 1',(100-sem1),sem1,0,0],
+                        ['semana 2',0,0, (100-sem2),sem2]
+                    ]);
+
+                    var optionsstp = {
+                        title:'COMPARACIÓN PORCENTUAL',
+                        width: 600,
+                        height: 400,
+                        legend: { position: 'top', maxLines: 3 },
+                        bar: { groupWidth: '80%' },
+                        isStacked: 'percent'
+                    };
+
+                    var chartstp = new google.visualization.ColumnChart(document.getElementById('chart_stack_p'));
+                    chartstp.draw(datastp, optionsstp);
+                }
+
+
+
+            } //Chart
+
+          }
+
+
+  </script>
+
+
+}

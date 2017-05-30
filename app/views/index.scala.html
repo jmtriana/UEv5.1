@@ -1,0 +1,104 @@
+@*
+ * This template takes a single argument, a String containing a
+ * message to display.
+ *@
+@(message: String)
+
+@*
+ * Call the `main` template with two arguments. The first
+ * argument is a `String` with the title of the page, the second
+ * argument is an `Html` object containing the body of the page.
+ *@
+@main("Hola"){
+
+ <br>
+ <br>
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<body>
+ <div id="instr">
+  <br>
+   <div id="icono">
+    <br>
+    <i id="icono_in" style="color: whitesmoke; font-size: 200%" align="center"></i>
+   </div>
+   <div id="explicacion">
+    <ins id="explicacion_title" style="color: white"></ins>
+    <p id="explicacion_in" style="color: whitesmoke;font-size: 90%"></p>
+   </div>
+ </div>
+ <div id="image">
+ </div>
+ <div id="mySidenav" class="sidenav">
+  <a href="#" id="inicio" onclick="bienvenido()">&nbsp;<i class="fa fa-home fa-fw"></i>&nbsp;</a>
+  <a href="#" id="registro" onclick="crear()">&nbsp;<i class="fa fa-user fa-fw"></i>&nbsp;</a>
+  <a href="#" id="tabla_check" onclick="tabla()">&nbsp;<i class="fa fa-check-square fa-fw"></i>&nbsp;</a>
+  <a href="#" id="graficos" onclick="graficos()">&nbsp;<i class="fa fa-area-chart fa-fw"></i>&nbsp;</a>
+  <a href="#" id="resumen" onclick="historico()">&nbsp;<i class="fa fa-line-chart fa-fw"></i>&nbsp;</a>
+  <a href="#" id="cerrar"  onclick="cerrado()">&nbsp;<i class="fa fa-close fa-fw"></i>&nbsp;</a>
+ </div>
+
+ <div style="margin-left:80px;" id="expl">
+  <p id="icono"></p>
+ </div>
+ <script type="text/javascript">
+         function bienvenido(){
+          document.getElementById("instr").style.height="100px";
+          var texto = "BIENVENIDO!";
+          var texto2 = "El menú ubicado a la izquierda ofrece una guia rápida de como utilizar este software, el cual esta " +
+                  "orientado a identificar fallas en parametros de calidad de las instalaciones.";
+          document.getElementById("explicacion_title").innerHTML = texto;
+          document.getElementById("explicacion_in").innerHTML = texto2;
+          document.getElementById("icono_in").className = "fa fa-home fa-fw"
+         }
+         function crear() {
+          document.getElementById("instr").style.height="100px";
+          var texto = "PASO 1: Crear Registro";
+          var texto2 = "Aqui podrá ingresar información básica de una nueva instalación como nombre, código, línea y fechas. " +
+                  "Además, podrá seleccionar que items de calidad serán evaluados. Para ingresar oprima el botón 'Crear Registro' en la esquina superior derecha";
+          document.getElementById("explicacion_title").innerHTML = texto;
+          document.getElementById("explicacion_in").innerHTML = texto2;
+          document.getElementById("icono_in").className = "fa fa-user fa-fw"
+         }
+         function tabla() {
+          document.getElementById("instr").style.height="100px";
+          var texto = "PASO 2: Tabla HSQS";
+          var texto2 = "Tras ingresar una nuevo registro, en esta página verá la tabla con parámetros de calidad a evaluar." +
+                  "Evalue cada item con un '1' o con un '0' dependiendo de si cumplió o no. Al final obtendrá un resultado y podrá avanzar a la vista de gráficos.";
+          document.getElementById("explicacion_title").innerHTML = texto;
+          document.getElementById("explicacion_in").innerHTML = texto2;
+          document.getElementById("icono_in").className = "fa fa-check-square fa-fw"
+         }
+         function graficos() {
+          document.getElementById("instr").style.height="100px";
+          var texto = "PASO 3: Gráficos";
+          var texto2 = "En esta vista podrá observar los resutlados obtenidos tras la evaluación. Presione el botón 'Resultados' para imprimirlos en pantalla " +
+                  "y asi tambien verá los items que mas fallarón, en que porcentajes y si el sitio es aprobado o no.";
+          document.getElementById("explicacion_title").innerHTML = texto;
+          document.getElementById("explicacion_in").innerHTML = texto2;
+          document.getElementById("icono_in").className = "fa fa-area-chart fa-fw"
+         }
+         function historico() {
+          document.getElementById("instr").style.height="100px";
+          var texto = "HISTORICO:";
+          var texto2 = "Al presionar el botón 'Histórico' ubicado en la barra de navegación superior, " +
+                  "podrá acceder a la información ya registrada, ver gráficas comparativas y trasabilidad de items fallidos.";
+          document.getElementById("explicacion_title").innerHTML = texto;
+          document.getElementById("explicacion_in").innerHTML = texto2;
+          document.getElementById("icono_in").className = "fa fa-line-chart fa-fw"
+         }
+         function cerrado() {
+             document.getElementById("instr").style.height="0px";
+             //document.getElementById("icono").style.height="0px";
+             //document.getElementById("icono").innerHTML='';
+             //document.getElementById("explicacion").style.height="0px";
+             //document.getElementById("explicacion").innerHTML='';
+
+         }
+ </script>
+
+</body>
+
+
+}

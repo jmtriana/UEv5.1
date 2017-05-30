@@ -1,0 +1,31 @@
+@(items: Array[Item])
+<!--
+<script>
+        function funcion1(){
+            var cont1=[0,1,2,3,4,5,6,7,8,9];
+            var i;
+            for(i=0;i<10;i++){
+            toString(cont1[i]);
+            //document.getElementById("valor").innerHTML=cont1[i];
+                var table = document.getElementById("Tabla1");
+                var row = table.insertRow(0);
+                var cell1 = row.insertCell(0);
+                cell1.innerHTML = cont1[i];
+            }
+
+        }
+</script>
+-->
+<style>
+table, td {
+    border: 1px solid black;
+}
+</style>
+    <button onclick="funcion1()">go</button>
+<table id="Tabla1">
+    <thead>
+        <tr><th>DESCRIPCION</th><th>&nbsp;</th><th>SCORE</th><th>&nbsp;</th><th>%CUMPLIMIENTO</th><th>&nbsp;</th><th>SCORE REAL</th></tr>
+        <tr><td><b id="valor"></b></td><td>&nbsp;</td></tr>
+    </thead>
+</table>
+

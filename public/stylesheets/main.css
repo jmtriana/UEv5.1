@@ -1,0 +1,323 @@
+#map {
+    width: 100%;
+    height: 300px;
+}
+#mapSection{
+    width: 100%;
+}
+#btnAddService{
+    padding: 10px;
+}
+.row{
+    display: inline;
+}
+.thumbnail{
+    background: rgba(255,255,255,0.9);
+}
+form{
+    padding: 15px;
+    background: rgba(255,255,255,0.8);
+}
+#visible{
+    padding: 15px;
+    background: rgba(255,255,255,0.8);
+}
+
+nav{
+    margin-bottom: 100px;
+}
+#tec_wireless{
+    display: none;
+}
+#seccion1{
+    width: 25%;
+    float: left;
+}
+#seccion3{
+    width: 25%;
+    float: left;
+}
+#seccion2{
+    width: 25%;
+    float: left;
+    /*border: solid;
+    height: 150px;
+    width: 200px;*/
+}
+#headers{
+    width: 15%;
+    float: left;
+}
+#id{
+    visibility: hidden;
+}
+#sub_sec{
+    float: left;
+    width: 27%;
+}
+#mw_options{
+    visibility: hidden;
+}
+
+#tablar{
+    width: 30%;
+}
+#linechart_material1{
+    float: left;
+    width: 70%;
+}
+#curve_chartsc{
+    float: left;
+    width: 70%;
+}
+#tabla_res{
+    float: left;
+    width: 30%;
+    visibility: hidden;
+}
+#borrar{
+    visibility: hidden;
+}
+#tabla_form{
+width: auto;
+}
+.button {
+    background-color: black; /* Green */
+    border: none;
+    color: white;
+    padding: 6px 20px;
+    font-size: 16px;
+    margin: 2px 2px;
+    transition-duration: 0.3s;
+    cursor: pointer;
+    border-radius: 8px;
+}
+.button5 {
+    background-color: #555555;
+    color: white;
+    border: 1px solid black;
+}
+
+.button5:active {
+    background-color: #444444;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+.button4 {
+    background-color: #555555;
+    color: white;
+    border: 1px solid black;
+    position: absolute;
+    right: 20px;
+}
+
+.button4:active {
+    background-color: #444444;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+#myInput {
+
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 80%; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 10px 20px 12px 40px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+    horiz-align: center;
+}
+#tabla_filtrar{
+    width: 100%;
+    height: 300px;
+    overflow: auto;
+    border: #333333;
+}
+#frase{
+    display: inline-block;
+}
+#fecha1{
+    display: inline-block;
+    height: 30px;
+    border-radius: 3px;
+}
+#fecha2{
+    display: inline-block;
+    height: 30px;
+    border-radius: 3px;
+}
+#fecha3{
+    display: inline-block;
+    height: 30px;
+    border-radius: 3px;
+}
+#fecha4{
+    display: inline-block;
+    height: 30px;
+    border-radius: 3px;
+}
+#chart_anot{
+    width: 90%;
+    height: 300px;
+}
+#fechas_graficar{
+    visibility: visible;
+    margin-bottom: 10px;
+    }
+#image{
+    content: url(https://revistaitnow.com/wp-content/uploads/2015/05/telecomunicaciones_366.jpg);
+    width: 100%;
+    height: 622px;
+}
+#mySidenav a {
+    position: absolute;
+    left: -40px;
+    transition: 0.3s;
+    padding: 15px;
+    width: 80px;
+    font-size: 15px;
+    color: whitesmoke;
+    border-radius: 0 5px 5px 0;
+}
+
+#mySidenav a:hover {
+    left: 0;
+}
+
+#inicio {
+    top: 200px;
+    background-color: #0f0f0f;
+}
+
+#registro {
+    top: 260px;
+    background-color: #1b6d85;
+}
+
+#tabla_check {
+    top: 320px;
+    background-color: #555555;
+}
+
+#graficos {
+    top: 380px;
+    background-color: #3c763d;
+}
+#resumen {
+    top: 440px;
+    background-color: #8a6d3b;
+}
+#cerrar {
+    top: 500px;
+    background-color: #122b40;
+}
+#instr{
+    transition: 0.3s;
+    background-color: #333333;
+    overflow:hidden;
+}
+#icono{
+    float: left;
+    width: 20%;
+    background-color: #333333;
+    height: inherit;
+}
+#explicacion{
+    float: right;
+    width: 80%;
+    background-color: #333333;
+    height: inherit;
+}
+#icono_in{
+    width: 50%;
+    line-height: 50%;
+    margin: 0 auto;
+}
+#form1_title{
+    margin: 0 auto;
+    display: inline-block;
+}
+#user1{
+    margin: 0 auto;
+    display: inline-block;
+}
+#user2{
+    margin: 0 auto;
+    display: inline-block;
+}
+#titulo1_user{
+    margin: 0 auto;
+}
+#general2{
+    background-color:#333333;
+    height: 300px;
+}
+#icono_cloud{
+    font-size: 500%;
+    position: absolute;
+    margin: 0 auto;
+    bottom: 30%;
+}
+#full_form{
+    background-color: silver;
+}
+#filtrar{
+    background-color: #333333;
+    top: 0px;
+}
+#btn_general{
+    background-color: #333333;
+    color: whitesmoke;
+    border-radius: 6px;
+    height: 50px;
+    width: 200px;
+}
+#btn_wl{
+    background-color: #333333;
+    color: whitesmoke;
+    border-radius: 6px;
+    height: 50px;
+    width: 200px;
+}
+#btn_mw{
+    background-color: #333333;
+    color: whitesmoke;
+    border-radius: 6px;
+    height: 50px;
+    width: 200px;
+}
+#btn_dw{
+    background-color: #333333;
+    color: whitesmoke;
+    border-radius: 6px;
+    height: 50px;
+    width: 200px;
+}
+#btn_calcular{
+    background-color: #333333;
+    color: whitesmoke;
+    border-radius: 6px;
+    height: 50px;
+    width: 200px;
+}
+#btn_graficos{
+    background-color: #333333;
+    color: whitesmoke;
+    border-radius: 6px;
+    height: 50px;
+    width: 200px;
+}
+#div_error{
+    width: 100%;
+    height: 500px;
+    align-content: center;
+}
+#div_inerror{
+
+    position: absolute;
+    top: 40%;
+    left: 40%;
+}
+
+
+

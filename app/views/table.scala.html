@@ -1,0 +1,279 @@
+@(items: Array[Item], indic: Indicadores)
+
+@main(""){
+  <br>
+  <br>
+  <br>
+  <div>
+    <pre>
+      Escriba 0 si no cumplió, 1 si cumplió y 2 si no aplica.
+    </pre>
+  </div>
+
+  <div id="tabla_izq">
+   <table class="table table-bordered">
+
+      <tr>
+        <th>DESCRIPCION</th>
+        <th>SCORE</th>
+        <th>% CUMPLIMIENTO</th>
+        <th>SCORE REAL</th>
+        <th>CODE</th>
+      </tr>
+
+      @for(item <- items){
+        @if(item.score == 0.0){
+          <tr colspan="5">
+            <td> <strong> @item.descripcion </strong> </td>
+            <td></td>
+            <td></td>
+          </tr>
+        } else {
+          <tr>
+            <td>@item.descripcion</td>
+            <td id="score@item.id">@item.score</td>
+            <td><input type="number" placeholder="@item.porcentaje" id="porcentaje@item.id" for="porcentaje" step="0.01" min="0" max="1"></td>
+            <td id="score_real@item.id">0.0</td>
+            <td id="code@item.id">@item.code</td>
+          </tr>
+        }
+      }
+    </table>
+
+      <input type="button" value="Calcular" onclick="resolve()" id="btn_calcular">
+      <input type="button" value="Graficos" onclick="testJS()" id="btn_graficos">
+
+  <form>
+    <fieldset>
+      <legend>- Resultados -</legend>
+    <table class="table-bordered">
+      <tr>
+        <td>Score Base: </td>
+        <td>
+          <input type="text" id="score_base" value="" size="30" readonly>
+        </td>
+      </tr>
+      <tr>
+        <td>Score Real: </td>
+        <td>
+          <input type="text" id="score_real" value="" size="30" readonly>
+        </td>
+      </tr>
+      <tr id="ord">
+        <td>Porcentajes ordenados: </td>
+        <td>
+          <input type="text" id="porc_ord" value="" size="30" readonly>
+        </td>
+      </tr>
+    </table>
+    </fieldset>
+  </form>
+
+
+
+    <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+
+            console.log("Item0: " + "@items(0).descripcion");
+            console.log("Item1: " + "@items(1).code");
+            var pareto_arr=[];
+            var pareto_arr1=[];
+            var score_real;
+            var score_base;
+            var matriz=[];
+            function resolve() {
+
+              var sumatoriaScore = 1;
+              var sumatoriaScoreReal = 1;
+              var cont=0;
+              var arreglo=[];
+              var porc_originales=[];
+
+              var indices=[];
+              var arr_code=[];
+
+              @for(item <- items){
+
+
+              var porcentaje@item.getId() = document.getElementById("porcentaje" + @item.id);
+              var score@item.id = document.getElementById("score" + @item.id);
+              var score_real@item.id = document.getElementById("score_real" + @item.id);
+              var code@item.id = document.getElementById("code"+@item.id);
+
+
+              if((porcentaje@item.getId()) == null){
+                console.log("Encabezado papá");
+              }
+              if((score@item.getId()) == null){
+                console.log("Alzate papá");
+              }
+
+              var res@item.id;
+
+              var x = 1;
+
+              if((porcentaje@item.getId()) !== null && (score@item.getId()) !== null && parseFloat((porcentaje@item.getId()).value)!==2){
+
+                //arreglo[item.id]= parseFloat((porcentajeitem.getId()).value);
+                arreglo[cont] = parseFloat((porcentaje@item.getId()).value);
+                arr_code[cont] = (code@item.getId()).innerHTML;
+                //arr_descripciones[cont]= item.descripcion;
+
+                  sumatoriaScore += parseFloat((score@item.getId()).innerHTML);
+                  res@item.id = parseFloat((porcentaje@item.getId()).value) * parseFloat((score@item.getId()).innerHTML);
+                  sumatoriaScoreReal += res@item.id;
+
+
+                console.log("Res en " + @item.id + " es " + res@item.id);
+
+                (score_real@item.id).setAttribute('innerHTML', '');
+                //(score_realitem.id).innerHTML = '';
+                (score_real@item.id).setAttribute('innerHTML', res@item.id);
+                //(score_realitem.id).innerHTML = resitem.id;
+
+                //x = resitem.id;
+
+
+                console.log("Sumatoria Score: " + sumatoriaScore);
+                console.log("Sumatoria Score Real: " + sumatoriaScoreReal);
+                console.log("Item1: " + (code@item.getId()).innerHTML);
+                console.log(arreglo);
+                cont++;
+
+              }
+
+              } //for
+              console.log(arr_code);
+              var score_real = sumatoriaScoreReal-1;
+              var score_base = sumatoriaScore-1;
+              document.getElementById("score_base").value = score_base.toString();
+              document.getElementById("score_real").value = score_real.toString();
+              console.log(arreglo.length);
+
+              porc_originales=arreglo;
+
+              var code_originales=arr_code;
+              matriz = [porc_originales , code_originales];
+
+              /*for(var f = 0;f <arreglo.length;f++){
+               for(var c=0;c<arreglo.length-f;c++ ){
+               if(arreglo[c]>arreglo[c+1]){
+               var aux;
+               aux = arreglo[c];
+               arreglo[c] = arreglo[c+1];
+               arreglo[c+1] = aux;
+               }
+               }
+               } // for arreglo porcentajes
+               console.log(arreglo);
+
+               for(var p=0;p<arreglo.length;p++){
+               for(var pp=0; pp<arreglo.length;pp++){
+               if(porc_originales[pp] == arreglo[p]){
+               indices[p]=pp;
+               }
+               }
+               } // for indices
+
+               for(var o=0;o<code_originales.length;o++){
+               arr_code[o]=code_originales[indices[o]];
+               } // for codigos
+               */
+
+
+              console.log("indices"+indices);
+             /*var suma =0;
+              var suma_a=0;
+              for(var aa=0;aa<arreglo.length;aa++){
+              suma=suma+arreglo[aa];
+              }
+              var prom_porc = (suma/arreglo.length)*100;
+              document.getElementById("porc").value = prom_porc.toString();
+
+
+              var pareto_porc = 0.8*suma;
+              console.log("suma "+suma);
+              console.log("el 80% "+pareto_porc);
+              console.log("porcentaje promedio: "+prom_porc);
+
+              for (var bb=0;bb<arreglo.length;bb++){
+              suma_a= suma_a+arreglo[bb];
+              if(suma_a<pareto_porc){
+              pareto_arr[bb]=arreglo[bb];
+              }
+              }
+
+              for (var cc=0;cc<pareto_arr.length;cc++){
+              pareto_arr1[cc] = (100-(pareto_arr[cc]*100));
+              }*/
+
+              document.getElementById("porc_ord").value = matriz.toString();
+              //indic.valores = pareto_arr1.toString();
+              //indic.score = score_base;
+              //indic.scoreReal = score_real;
+              var aaaa= score_base.toString();
+              //indic.setScore(s"$score_base");
+
+              /* FusionCharts.ready(function(){var fusioncharts = new FusionCharts({
+                type: 'pareto3d',
+                renderAt: 'chart-container',
+                width: '1000',
+                height: '600',
+                dataFormat: 'json',
+                dataSource: {
+                "chart": {
+                "caption": "HSQS items de calidad",
+                "xAxisName": "Items con mas fallos",
+                "pYAxisName": "Porcentaje",
+                "sYAxisname": "Cumulative Percentage",
+                "showHoverEffect": "1",
+                "theme": "fint"
+
+                },
+                "data": [{
+                "label": "Antena",
+                "value": (100-(pareto_arr[1]*100)).toString()
+                }, {
+                "label": "Fibers",
+                "value": "30"
+                }, {
+                "label": "Aterrizaje",
+                "value": "60"
+                }, {
+                "label": "Limpieza",
+                "value": "35"
+                }, {
+                "label": "Jumpers",
+                "value": "10"
+                }, {
+                "label": "Otros",
+                "value": "20"
+                }]
+                }
+                }
+                );
+                fusioncharts.render();
+                });*/
+
+            } // Funcion resolve
+            function testJS() { // Envio de datos a graficos
+              var b;
+              b= document.getElementById('score_real').value + "+" + document.getElementById('score_base').value + "+" + document.getElementById("porc_ord").value;
+
+
+                url = "@routes.GeneralesController.graficosIndicadores()?name=" +encodeURIComponent(b);
+                document.location.href = url;
+
+            } // fin envio
+
+
+
+    </script>
+
+  </div>
+  <div id="chart-container"></div>
+
+}

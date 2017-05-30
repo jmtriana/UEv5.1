@@ -1,0 +1,348 @@
+
+@(formu:Form[Historico],items: Array[Object], valores: Array[String], score: String, scoreReal: String, arreglox: Array[Generales])
+
+@main(""){
+
+    <html>
+        <head>
+            <br>
+            <br>
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+            <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+            <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+            <script type="text/javascript">
+
+                var var1=0;
+                var var2=0;
+                var isc=0;
+                var suma_score=0;
+                failed_it = [];
+                failed_code = [];
+
+                    // Dias arribo materiales
+                    var a;
+                    var a1=[];
+                    var a2=[];
+                    var a3=[];
+                    var a4=[];
+                    var meta_diasm = 1;
+                    var porc_diasm;
+                    var subs, perdido;
+                    if(2>meta_diasm){
+                        subs = @items(0)-meta_diasm;
+                        perdido = subs*5;
+                        porc_diasm = 100-perdido;
+                        var chart_value = porc_diasm/10;
+                    }else {
+                        chart_value=10;
+                        porc_diasm=100;
+                    }
+                    // Fin dato arriba material
+                    // Dias tras solicitud
+                    var meta_diasr = 3;
+                    var porc_diasr;
+                    var subsr, perdidor;
+                    if(2>meta_diasr){
+                        subsr = @items(1)-meta_diasr;
+                        perdidor = subsr*3;
+                        porc_diasr = 100-perdidor;
+                        var chart_valuer = porc_diasr/10;
+                    }else {
+                        chart_valuer = 10;
+                        porc_diasr = 100;
+                    }
+                    //Calculo Indicador Score
+                      // 100%
+
+
+                     // Fin calculo fallos resueltos
+
+                // Calculo pie chart Score
+
+
+                // Fin calculo pie chart Score
+                    google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback(drawChart);
+
+                    function drawChart() {
+                        var part1=0;
+                        var part2=0;
+                        var suma_fallos;var color1='';
+                        var isc1=var1/var2;
+
+                        console.log(isc1);
+                        if(isc1<0.9){
+                            suma_fallos = 0.9+isc1;
+                            part2=((0.9-isc1)*suma_fallos);
+                            part1=0.9-part2;
+                            ifs=(part1/0.9)*100;
+                            color1='red';
+
+                        }else{
+                            part1=10;
+                            part2=0;
+                            ifs=100;
+                            color1 = 'green';
+                        }
+                        { // Chart 2 Score
+                            suma_score = var1+var2;
+                            var real_mostrar = suma_score*(var1/var2);
+                            var restante = suma_score-real_mostrar;
+                            console.log("suma: " +suma_score);
+                            console.log("porc1: " +real_mostrar);
+                            console.log("restante: " +restante);
+                            var data1 = google.visualization.arrayToDataTable([
+                                ['Task', 'Score'],
+                                ['Score general', real_mostrar],
+                                ['Faltante', restante]
+                            ]);
+
+                            var options1 = {
+                                title: 'Indicador Score',
+                                is3D: true
+                            };
+
+                            var chart1 = new google.visualization.PieChart(document.getElementById('piechart1'));
+
+                            chart1.draw(data1, options1);
+                        } //Chart 2
+                        { //Pareto
+
+
+                            var dataSet11=[];
+
+                            var cnt3=0;
+
+                           for(var ca =0;ca<a3.length;ca++){
+                               dataSet11[ca]=[a4[ca],a3[ca]];
+                               if(a3[ca]!= 0){
+                                   failed_it[cnt3]= a3[ca];
+                                   failed_code[cnt3] = a4[ca];
+                                   cnt3++;
+                               }
+                           }
+                           console.log("Cantidad de items: "+a3.length);
+                           console.log("Codigos fallidos: "+failed_code);
+                            console.log("Items fallidos: "+failed_it);
+
+                            var dataTitle1 = [ 'Category', 'Size', 'Pctg' ];
+                            // Sort the dataSet array usung column 2
+                            dataSet11.sort( function(a,b) {
+                                return b[1] - a[1];
+                            });
+
+                            console.log(dataSet11[0]); // Datos organizados. Enviar el primero a BD
+                            var variable = dataSet11[0];
+                            codigo_form= variable[0];
+                            porcentaje_form = variable[1];
+                            console.log(codigo_form);
+                            console.log(porcentaje_form);
+
+
+                            // Calculate the total of column 2
+                            var sum = 0;
+                            for(row=0; row<dataSet11.length; row++) {
+                                sum += dataSet11[row][1];
+                            }
+
+                            // Calculate the accumulating percentages
+                            // and add them into a new column in each row
+                            var accum = 0;
+                            for(row=0; row<dataSet11.length; row++) {
+                                dataSet11[row].push( accum+100*dataSet11[row][1]/sum );
+                                accum = dataSet11[row][2];
+                            }
+
+                            // Add the title row at the beginning of dataSet
+                            // ('unshift' is not supported in IE8 and earlier)
+                            dataSet11.unshift( dataTitle1 );
+                            var data5 = google.visualization.arrayToDataTable( dataSet11 );
+
+                            var options5 = {
+                                title:  'Pareto chart',
+                                legend: { position: 'none' },         // no legend
+                                // Create two vertical axes taking its titles from the first row
+                                vAxes:[
+                                    { title: dataSet11[0][1], minValue: 0 },
+                                    { title: dataSet11[0][2], minValue: 0, maxValue: 100 }
+                                ],
+                                hAxis:  { title: dataSet11[0][0] },
+                                //backgroundColor: {strokeWidth: 2 },   // to get a nice box
+                                seriesType: "bars", color:'red',                  // the standard chart type
+                                // the second data column should be of type 'line' and should be associated with the second vertical axis
+                                series: {1: {type: "line",color:'black', targetAxisIndex: 1 }}
+                            };
+
+                            // Note: this calls a ComboChart !!!
+                            var chart5 = new google.visualization.ComboChart(document.getElementById('chart_div2'));
+                            chart5.draw(data5, options5);
+                        } //Pareto
+                        {
+                            var sc_st=(var1/var2)*10;
+                            var sc_ms=10-sc_st;
+                            var itporc=(failed_it.length/a3.length)*100;
+                            var datast = google.visualization.arrayToDataTable([
+                                ['Genre', 'score', 'faltante', 'items aprobados', 'total fallidos'],
+                                ['Score', sc_st, sc_ms,0,0],
+                                ['items', 0, 0,(a3.length-failed_it.length),failed_it.length]
+                            ]);
+
+                            var optionsst = {
+                                title:'RESULTADOS',
+                                width: 600,
+                                height: 400,
+                                legend: { position: 'top', maxLines: 3 },
+                                bar: { groupWidth: '80%' },
+                                isStacked: true
+                            };
+
+                            var chartst = new google.visualization.ColumnChart(document.getElementById('chart_stack'));
+                            chartst.draw(datast, optionsst);
+                        }
+                        } //Draw Chart Google
+
+                    var conta=0;
+                    window.onload = function () { //Recepcion de datos en tabla
+                        conta++;
+                        var url = document.location.href,
+                                params = url.split('=')[1].split('%2B'),
+                                data = {}, tmp;
+
+                         var1= parseFloat(params[0]);
+                         var2 = parseFloat(params[1]);
+                         var var3 = params[2];
+                         a  = var3.split('%2C');
+                         for (var c1=0;c1<(a.length/2);c1++){
+                             a1[c1]=a[c1]*100;
+                             a3[c1] = 100-a1[c1];
+                         } // for porcentajes sin ordenar
+
+                        a4=a.splice((a.length/2),(a.length-1)); // Arreglo Codigos
+
+                         var pp=a[0]-10;
+                        console.log("Longitud Arreglo: "+a.length);
+                        console.log("porcentajes: "+a1);
+                        console.log("Longitud Porcentajes: "+a1.length);
+                        console.log("porc: "+a3);
+                        console.log("Longitud code: "+ a2.length);
+                        console.log("codigos: "+a2);
+                        console.log("a4: "+a4);
+
+
+                    }// fin recepcion
+
+                function traerDatos(){
+                var scoresr = parseFloat(var1);
+                var scoresb = parseFloat(var2);
+                var msg="";
+                var paso = (var1/var2)*100;
+                    console.log("ifS: "+ifs);
+                    console.log("paso: "+paso);
+                if(paso>=90){
+                    msg = "SI";
+                }else{
+                    msg = "NO";
+                }
+                    var n =  new Date();
+                    var y = n.getFullYear();
+                    var m = n.getMonth() + 1;
+                    var d = n.getDate();
+                    console.log("code: "+failed_code);
+                    console.log("item: "+failed_it);
+                    console.log("item: "+failed_it.length);
+                    if (failed_it == ""){
+                        failed_it=0;
+                    }
+                    if (failed_code == ""){
+                        failed_code=0;
+                    }
+                    var asd = failed_it.length;
+                    if(asd == null){
+                        asd=0;
+                    }
+
+                document.getElementById("score").value = (scoresr/scoresb)*100;
+                document.getElementsByName("score").value = (scoresr/scoresb)*100;
+                document.getElementById("codigo").value = failed_code;
+                document.getElementsByName("codigo").value = failed_code;
+                document.getElementById("porc").value = failed_it;
+                document.getElementsByName("porc").value = failed_it;
+                document.getElementById("ifs").value = msg;
+                document.getElementsByName("ifs").value = msg;
+                document.getElementById("nfallidos").value = asd;
+                document.getElementsByName("nfallidos").value = asd;
+                document.getElementById("ntotal").value = a3.length;
+                document.getElementsByName("ntotal").value = a3.length;
+                document.getElementById("date").value = m + "/" + d + "/" + y;
+                document.getElementsByName("date").value = m + "/" + d + "/" + y;
+
+                }
+
+            </script>
+        </head>
+        <body>
+
+
+            @helper.form(action = routes.GeneralesController.postHistorico(),'id->"go", 'method->"POST"){
+                <form id="form1">
+                    <div id="tabla_form" style="overflow-x:auto;">
+                    <table class="table table-bordered" id="tablar">
+                        <tr>
+                             <td>SITE NAME</td>
+                             <td>RESPONSABLE</td>
+                             <td>TECNOLOGÍA</td>
+                             <td>SCORE (%)</td>
+                             <td>ITEM FALLIDO</td>
+                             <td>ITEM (%)</td>
+                             <td>APROBADO</td>
+                             <td># FALLIDOS</td>
+                             <td># TOTAL</td>
+                             <td>FECHA</td>
+                        </tr>
+                        <tr>
+                            <td><input type="input" id="site2" value="@arreglox(0).nombre_proyecto" name="site2" readonly> </td>
+                            <td><input type="input" id="resp" name="resp" value="@arreglox(0).responsable" readonly></td>
+                            <td><input type="input" id="tec" name="tec" value="@arreglox(0).tec" readonly></td>
+                            <td><input type="input" id="score" name="score"></td>
+                            <td><input type="input" id="codigo" name="codigo"></td>
+                            <td><input type="input" id="porc" name="porc"></td>
+                            <td><input type="input" id="ifs" name="ifs"></td>
+                            <td><input type="input" id="nfallidos" name="nfallidos"></td>
+                            <td><input type="input" id="ntotal" name="ntotal"></td>
+                            <td><input type="input" id="date" name="date"></td>
+                        </tr>
+                    </table>
+
+                    <input type="button" value="Resultados" class="button button5" onclick="traerDatos()">
+
+                    </div>
+
+
+            <div id="tabla1">
+
+            <table class="table table-bordered" id="Graphs">
+                <tr>
+                    <th width="75%">GRAFICOS</th>
+                    <th>CAUSAS</th>
+                </tr>
+                <tr colspan="2">
+                    <td id="chart_stack" style="height: 300px; width: 75%"></td>
+                </tr>
+                <tr>
+                    <td id="piechart1" style="width: 400px; height: 300px;"> </td>
+                    <td><textarea rows="15" cols="42" id="causas" name="causas"></textarea></td>
+                </tr>
+                <tr colspan="2">
+                    <td id="chart_div2" style="height: 300px; width: 75%"></td>
+                </tr>
+            </table>
+
+        </div>
+                    <input type="submit" value="Guardar" class="button button4">
+                </form>
+        </body>
+    </html>
+    }
+
+}

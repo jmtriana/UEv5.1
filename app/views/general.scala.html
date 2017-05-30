@@ -1,0 +1,596 @@
+@import views.html.helper.options
+@(form: Form[Generales], indic: Indicadores)
+
+@main(""){
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <div id="full_form">
+  <div class="panel-heading"> Crear Proyecto </div>
+    @helper.form(action = routes.GeneralesController.postCreateProject(), 'id->"createProject", 'method->"POST") {
+
+      <form class="">
+        <div>
+          <div id="titulo1_user">
+          <i class="fa fa-user" id="user1" style="font-size: 200%"></i>&nbsp;&nbsp;<h2 class=""  id="form1_title" align="center">Crear Nuevo Registro</h2>
+          </div>
+        </div>
+        <br>
+        <div id="seccion1">
+        <label for="nombre_proyecto" class="sr-only">Site name:</label>
+        @helper.inputText(
+            form("nombre_proyecto"),
+          '_id -> "site_name",
+          '_label -> "Site name:",
+          '_showConstraints -> false,
+          '_showErrors -> true
+        )
+          <label for="code" class="sr-only">Code:</label>
+          @helper.inputText(
+            form("codigo_proyecto"),
+            '_label -> "Código del Proyecto:",
+            '_showConstraints -> false,
+            '_showErrors -> true
+          )
+
+        <label for="responsable" class="sr-only">Responsable</label>
+        @helper.inputText(
+          form("responsable"),
+          '_label -> "Responsable:",
+          '_showConstraints -> false,
+          '_showErrors -> true
+        )
+
+        </div>
+        <div id="seccion3">
+          <label for="fechai" class="sr-only">Fecha de Inicio</label>
+          @helper.inputDate(
+            form("fechai"),
+            '_id -> "fechai",
+            '_label -> "Fecha Inicio:",
+            '_showConstraints -> false,
+            '_showErrors -> true
+          )
+
+          <label for="fechaf" class="sr-only">Fecha de Finalizaci&oacute;n</label>
+          @helper.inputDate(
+            form("fechaf"),
+            '_label -> "Fecha de Finalización:",
+            '_showConstraints -> false,
+            '_showErrors -> true
+          )
+
+        </div>
+        <div id="seccion2">
+          <h4>Tecnolog&iacute;a:</h4>
+          <input type="radio" name="linea" id="dwdm" form="dwdm" onclick="hola()"> DWDM <br>
+          <input type="radio" name="linea" id="wireless" form="wireless" onclick="hola()"> Wireless <br>
+          <input type="radio" name="linea" id="microwaves" form="microwaves" onclick="hola()"> Microwaves <br>
+          <input type="radio" name="linea" id="access" form="access" onclick="hola()"> Access <br>
+        @helper.inputRadioGroup(
+          form("tec"),
+          options = options("dwdm"->"DWDM", "microondas"->"Microondas", "wireless"->"Wireless", "access"->"Access"),
+          '_id -> "id",
+          '_onclick -> "javascript:hola()",
+          '_display -> "none"
+        )
+          <div id="sub_sec"></div>
+
+          <!--select id="mw_options">
+            <option id="mw_ant1" value="mw1">Antena 0.3/0.6</option>
+            <option id="mw_ant2" value="mw2">Antena 0.9/1.2</option>
+            <option id="mw_ant3">Antena 1.8/2.4</option>
+            <option id="mw_ant4">Antena 4.6</option>
+          </select-->
+          </div>
+
+        <div id="headers">
+        <br>
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Registrar</button>
+      </form>
+</div>
+
+
+        <script>
+              // create the necessary elements
+              var btn = document.getElementById("tec_wireless");
+              btn.onclick = hola();
+              var btn1 = document.getElementById("tec_dwdm");
+              btn1.onclick = hola();
+              var btn2 = document.getElementById("tec_microondas");
+              btn2.onclick = hola();
+              var btn3 = document.getElementById("tec_access");
+              btn3.onclick = hola();
+              var trule = document.getElementById("wireless");
+
+
+
+              function hola(){
+                var radio3 = document.getElementById("dwdm");
+                var radio2 = document.getElementById("microwaves");
+                var radio4 = document.getElementById("access");
+                //DWDM
+               if(radio3.checked==true){
+                   btn1.checked=true;
+                 document.getElementById('headers').innerHTML = '';
+                 document.getElementById('sub_sec').innerHTML = ''; // Borra Antenas
+
+                // ======================================== SELECCION DE ENCABEZADOS ================
+                //--------Primer encabezado----------
+                 var label_dw = document.createElement("label");
+                 var desc_dw = document.createTextNode("HSE y adicionales");
+                 var cb_dw = document.createElement("input");
+
+                 cb_dw.type = "checkbox";
+                 cb_dw.name = "dw";
+                 cb_dw.value = "dw";
+                 cb_dw.id = "dw";
+
+                 label_dw.appendChild(cb_dw);
+                 label_dw.appendChild(desc_dw);
+                 document.getElementById("headers").appendChild(label_dw);
+
+                 //--------Segundo Encabezado--------
+                   var label_dw1 = document.createElement("label");
+                   var desc_dw1 = document.createTextNode("Instalacion Gabinete");
+                   var cb_dw1 = document.createElement("input");
+
+                   cb_dw1.type = "checkbox";
+                   cb_dw1.name = "dw1";
+                   cb_dw1.value = "dw1";
+                   cb_dw1.id = "dw1";
+
+                   label_dw1.appendChild(cb_dw1);
+                   label_dw1.appendChild(desc_dw1);
+                   document.getElementById("headers").appendChild(label_dw1);
+
+                   //--------Tercer Encabezado---------
+                   var label_dw2 = document.createElement("label");
+                   var desc_dw2 = document.createTextNode("Instalacion de Equipos");
+                   var cb_dw2 = document.createElement("input");
+
+                   cb_dw2.type = "checkbox";
+                   cb_dw2.name = "dw2";
+                   cb_dw2.value = "dw2";
+                   cb_dw2.id = "dw2";
+
+                   label_dw2.appendChild(cb_dw2);
+                   label_dw2.appendChild(desc_dw2);
+                   document.getElementById("headers").appendChild(label_dw2);
+
+                   //--------Cuarto Encabezado--------
+                   var label_dw3 = document.createElement("label");
+                   var desc_dw3 = document.createTextNode("Instalacion de Cables");
+                   var cb_dw3 = document.createElement("input");
+
+                   cb_dw3.type = "checkbox";
+                   cb_dw3.name = "dw3";
+                   cb_dw3.value = "dw3";
+                   cb_dw3.id = "dw3";
+
+                   label_dw3.appendChild(cb_dw3);
+                   label_dw3.appendChild(desc_dw3);
+                   document.getElementById("headers").appendChild(label_dw3);
+
+                   //---------Quinto Encabezado--------
+                   var label_dw4 = document.createElement("label");
+                   var desc_dw4 = document.createTextNode("Cable de energía");
+                   var cb_dw4 = document.createElement("input");
+
+                   cb_dw4.type = "checkbox";
+                   cb_dw4.name = "dw4";
+                   cb_dw4.value = "dw4";
+                   cb_dw4.id = "dw4";
+
+                   label_dw4.appendChild(cb_dw4);
+                   label_dw4.appendChild(desc_dw4);
+                   document.getElementById("headers").appendChild(label_dw4);
+
+                   //---------Sexto Encabezado--------
+                   var label_dw5 = document.createElement("label");
+                   var desc_dw5 = document.createTextNode("Canaleta y escalerilla");
+                   var cb_dw5 = document.createElement("input");
+
+                   cb_dw5.type = "checkbox";
+                   cb_dw5.name = "dw5";
+                   cb_dw5.value = "dw5";
+                   cb_dw5.id = "dw5";
+
+                   label_dw5.appendChild(cb_dw5);
+                   label_dw5.appendChild(desc_dw5);
+                   document.getElementById("headers").appendChild(label_dw5);
+
+                   //Octavo Encabezado
+                   var label_dw6 = document.createElement("label");
+                   var desc_dw6 = document.createTextNode("Marquillas");
+                   var cb_dw6 = document.createElement("input");
+
+                   cb_dw6.type = "checkbox";
+                   cb_dw6.name = "dw6";
+                   cb_dw6.value = "dw6";
+                   cb_dw6.id = "dw6";
+
+                   label_dw6.appendChild(cb_dw6);
+                   label_dw6.appendChild(desc_dw6);
+                   document.getElementById("headers").appendChild(label_dw6);
+                   //============================================================================0
+                   //====================== SELECCION ACTIVIDAD.======================
+                   var label_dw_act = document.createElement("label");
+                   var desc_dw_act = document.createTextNode("Opticas");
+                   var cb_act_dw = document.createElement("input");
+
+                   cb_act_dw.type="checkbox";
+                   cb_act_dw.name="dw_act";
+                   cb_act_dw.value="dw_act";
+                   cb_act_dw.id="dw_act";
+
+                   label_dw_act.appendChild(cb_act_dw);
+                   label_dw_act.appendChild(desc_dw_act);
+                   document.getElementById('sub_sec').appendChild(label_dw_act);
+
+                   //Datacom
+                   var label_dw_act1 = document.createElement("label");
+                   var desc_dw_act1 = document.createTextNode("Datacom");
+                   var cb_act_dw1 = document.createElement("input");
+
+                   cb_act_dw1.type="checkbox";
+                   cb_act_dw1.name="dw_act1";
+                   cb_act_dw1.value="dw_act1";
+                   cb_act_dw1.id="dw_act1";
+
+                   label_dw_act1.appendChild(cb_act_dw1);
+                   label_dw_act1.appendChild(desc_dw_act1);
+                   document.getElementById('sub_sec').appendChild(label_dw_act1);
+
+               }
+               //MICROWAVES
+                if(radio2.checked==true){
+                  btn2.checked=true;
+                  //document.getElementById('mw_options').style.cssText="visibility: visible";
+                  // ================================ SELECCION ACTIVIDAD =======================0
+                  //===================================Check primera antena
+                  var label_mw= document.createElement("label");
+                  var description_mw = document.createTextNode("Antena 0.3/0.6");
+
+                  document.getElementById('headers').innerHTML = ''; // Borra Headers
+                  document.getElementById('sub_sec').innerHTML = ''; // Borra Antenas
+
+                  var cb_mw = document.createElement("input");
+
+                  cb_mw.type = "checkbox";  // make the element a checkbox
+                  cb_mw.name = "mw";      // give it a name we can check on the server side
+                  cb_mw.value= "mw";     // make its value "pair"
+                  cb_mw.id = "mw";        // sets checbox's id
+
+                  label_mw.appendChild(cb_mw);   // add the box to the element
+                  label_mw.appendChild(description_mw);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_mw);
+                  //===========================================Check segunda antena
+                  var label_mw1= document.createElement("label");
+                  var description_mw1 = document.createTextNode("Antena 0.9/1.2");
+
+                  var cb_mw1 = document.createElement("input");
+
+                  cb_mw1.type = "checkbox";  // make the element a checkbox
+                  cb_mw1.name = "mw1";      // give it a name we can check on the server side
+                  cb_mw1.value= "mw1";     // make its value "pair"
+                  cb_mw1.id = "mw1";        // sets checbox's id
+
+                  label_mw1.appendChild(cb_mw1);   // add the box to the element
+                  label_mw1.appendChild(description_mw1);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_mw1);
+//=============================================================Check tercera antena
+                  var label_mw2= document.createElement("label");
+                  var description_mw2 = document.createTextNode("Antena 1.8/2.4");
+
+                  var cb_mw2 = document.createElement("input");
+
+                  cb_mw2.type = "checkbox";  // make the element a checkbox
+                  cb_mw2.name = "mw2";      // give it a name we can check on the server side
+                  cb_mw2.value= "mw2";     // make its value "pair"
+                  cb_mw2.id = "mw2";        // sets checbox's id
+
+                  label_mw2.appendChild(cb_mw2);   // add the box to the element
+                  label_mw2.appendChild(description_mw2);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_mw2);
+//===========================================Check cuarta antena
+                  var label_mw3= document.createElement("label");
+                  var description_mw3 = document.createTextNode("Antena 3.0/3.7");
+
+                  var cb_mw3 = document.createElement("input");
+
+                  cb_mw3.type = "checkbox";  // make the element a checkbox
+                  cb_mw3.name = "mw3";      // give it a name we can check on the server side
+                  cb_mw3.value= "mw3";     // make its value "pair"
+                  cb_mw3.id = "mw3";        // sets checbox's id
+
+                  label_mw3.appendChild(cb_mw3);   // add the box to the element
+                  label_mw3.appendChild(description_mw3);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_mw3);
+                  // FIN ACTIVIDADES
+
+                  // ==============================================SELECCIÓN ENCABEZADOS =======================
+                  // Primer encabezado HSE
+                  var lb_act_mw= document.createElement("label");
+                  var descr_act_mw = document.createTextNode("HSE");
+                  var cb_mw_act = document.createElement("input");
+
+                  cb_mw_act.type = "checkbox";
+                  cb_mw_act.name = "instmw";
+                  cb_mw_act.value = "instmw";
+                  cb_mw_act.id = "instmw";
+
+                  lb_act_mw.appendChild(cb_mw_act);
+                  lb_act_mw.appendChild(descr_act_mw );
+
+                  document.getElementById('headers').appendChild(lb_act_mw);
+
+                  // Segundo Encabezado Marquillas
+                  var lb_act_mw1= document.createElement("label");
+                  var descr_act_mw1 = document.createTextNode("Marquillas");
+                  var cb_mw_act1 = document.createElement("input");
+
+                  cb_mw_act1.type = "checkbox";
+                  cb_mw_act1.name = "instmw1";
+                  cb_mw_act1.value = "instmw1";
+                  cb_mw_act1.id = "instmw1";
+
+                  lb_act_mw1.appendChild(cb_mw_act1);
+                  lb_act_mw1.appendChild(descr_act_mw1);
+
+                  document.getElementById('headers').appendChild(lb_act_mw1);
+
+                  //Tercer Encabezado Tierras
+                    var lb_act_mw2= document.createElement("label");
+                    var descr_act_mw2 = document.createTextNode("Conexión a tierra");
+                    var cb_mw_act2 = document.createElement("input");
+
+                    cb_mw_act2.type = "checkbox";
+                    cb_mw_act2.name = "instmw2";
+                    cb_mw_act2.value = "instmw2";
+                    cb_mw_act2.id = "instmw2";
+
+                    lb_act_mw2.appendChild(cb_mw_act2);
+                    lb_act_mw2.appendChild(descr_act_mw2);
+
+                    document.getElementById('headers').appendChild(lb_act_mw2);
+
+                    // Cuarto Encabezado Panoramica
+                    var lb_act_mw3= document.createElement("label");
+                    var descr_act_mw3 = document.createTextNode("Panorámicas");
+                    var cb_mw_act3 = document.createElement("input");
+
+                    cb_mw_act3.type = "checkbox";
+                    cb_mw_act3.name = "instmw3";
+                    cb_mw_act3.value = "instmw3";
+                    cb_mw_act3.id = "instmw3";
+
+                    lb_act_mw3.appendChild(cb_mw_act3);
+                    lb_act_mw3.appendChild(descr_act_mw3);
+
+                    document.getElementById('headers').appendChild(lb_act_mw3);
+
+                } //fin condicion mw
+                //ACCESS
+                if(radio4.checked==true){
+                  btn3.checked=true;
+                }
+                //=================================================WIRELESS
+                var trule = document.getElementById("wireless");
+
+                if(trule.checked == true) {
+
+                  var label= document.createElement("label");
+                  var description = document.createTextNode("HSE");
+
+                  document.getElementById('headers').innerHTML = ''; //Borra headers
+                  document.getElementById('sub_sec').innerHTML = ''; // Borra Antenas
+
+                  btn.checked = true;
+                  var checkbox = document.createElement("input");
+
+                  checkbox.type = "checkbox";  // make the element a checkbox
+                  checkbox.name = "inst";      // give it a name we can check on the server side
+                  checkbox.value = "inst";     // make its value "pair"
+                  checkbox.id = "inst";        // sets checbox's id
+
+                  label.appendChild(checkbox);   // add the box to the element
+                  label.appendChild(description);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label);
+
+                  //Segundo
+                  var label2= document.createElement("label");
+                  var description2 = document.createTextNode("Estado del sitio");
+
+                  var checkbox2 = document.createElement("input");
+
+                  checkbox2.type = "checkbox";    // make the element a checkbox
+                  checkbox2.name = "inst2";      // give it a name we can check on the server side
+                  checkbox2.value = "inst2";         // make its value "pair"
+                  checkbox2.id = "inst2";        // sets checbox's id
+
+                  label2.appendChild(checkbox2);   // add the box to the element
+                  label2.appendChild(description2);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label2);
+
+                  //Tercero
+                  var label3= document.createElement("label");
+                  var description3 = document.createTextNode("Equipos internos");
+
+                  var checkbox3 = document.createElement("input");
+
+                  checkbox3.type = "checkbox";    // make the element a checkbox
+                  checkbox3.name = "inst3";      // give it a name we can check on the server side
+                  checkbox3.value = "inst3";         // make its value "pair"
+                  checkbox3.id = "inst3";        // sets checbox's id
+
+                  label3.appendChild(checkbox3);   // add the box to the element
+                  label3.appendChild(description3);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label3);
+
+                  //Cuarto
+                  var label4= document.createElement("label");
+                  var description4 = document.createTextNode("Cables de poder y tierras");
+
+                  var checkbox4 = document.createElement("input");
+
+                  checkbox4.type = "checkbox";    // make the element a checkbox
+                  checkbox4.name = "inst4";      // give it a name we can check on the server side
+                  checkbox4.value = "inst4";         // make its value "pair"
+                  checkbox4.id = "inst4";        // sets checbox's id
+
+                  label4.appendChild(checkbox4);   // add the box to the element
+                  label4.appendChild(description4);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label4);
+
+                  //Quinto
+                  var label5= document.createElement("label");
+                  var description5 = document.createTextNode("Fibra Óptica");
+
+                  var checkbox5 = document.createElement("input");
+
+                  checkbox5.type = "checkbox";    // make the element a checkbox
+                  checkbox5.name = "inst5";      // give it a name we can check on the server side
+                  checkbox5.value = "inst5";         // make its value "pair"
+                  checkbox5.id = "inst5";        // sets checbox's id
+
+                  label5.appendChild(checkbox5);   // add the box to the element
+                  label5.appendChild(description5);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label5);
+
+                  //Sexto
+                  var label6= document.createElement("label");
+                  var description6 = document.createTextNode("Transmisión y alarmas");
+
+                  var checkbox6 = document.createElement("input");
+
+                  checkbox6.type = "checkbox";    // make the element a checkbox
+                  checkbox6.name = "inst6";      // give it a name we can check on the server side
+                  checkbox6.value = "inst6";         // make its value "pair"
+                  checkbox6.id = "inst6";        // sets checbox's id
+
+                  label6.appendChild(checkbox6);   // add the box to the element
+                  label6.appendChild(description6);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label6);
+
+                  //Septimo
+                  var label7= document.createElement("label");
+                  var description7 = document.createTextNode("General (Aplica para todos los sectores)");
+
+                  var checkbox7 = document.createElement("input");
+
+                  checkbox7.type = "checkbox";    // make the element a checkbox
+                  checkbox7.name = "inst7";      // give it a name we can check on the server side
+                  checkbox7.value = "inst7";         // make its value "pair"
+                  checkbox7.id = "inst7";        // sets checbox's id
+
+                  label7.appendChild(checkbox7);   // add the box to the element
+                  label7.appendChild(description7);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label7);
+
+                  //Octavo
+                  var label8= document.createElement("label");
+                  var description8 = document.createTextNode("Marquillado");
+
+                  var checkbox8 = document.createElement("input");
+
+                  checkbox8.type = "checkbox";    // make the element a checkbox
+                  checkbox8.name = "inst8";      // give it a name we can check on the server side
+                  checkbox8.value = "inst8";         // make its value "pair"
+                  checkbox8.id = "inst8";        // sets checbox's id
+
+                  label8.appendChild(checkbox8);   // add the box to the element
+                  label8.appendChild(description8);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('headers').appendChild(label8);
+
+
+                  //========================================= SELECCIONES DE TIEMPO ACTIVIDAD ===================
+
+                  //===========================================Check tiempo 1
+                  var label_wl1= document.createElement("label");
+                  var description_wl1 = document.createTextNode("New");
+
+                  var cb_wl1 = document.createElement("input");
+
+                  cb_wl1.type = "checkbox";  // make the element a checkbox
+                  cb_wl1.name = "wl1";      // give it a name we can check on the server side
+                  cb_wl1.value= "wl1";     // make its value "pair"
+                  cb_wl1.id = "wl1";        // sets checbox's id
+
+                  label_wl1.appendChild(cb_wl1);   // add the box to the element
+                  label_wl1.appendChild(description_wl1);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_wl1);
+
+
+                  //===========================================Check tiempo 2
+                  var label_wl2= document.createElement("label");
+                  var description_wl2 = document.createTextNode("Swap");
+
+                  var cb_wl2 = document.createElement("input");
+
+                  cb_wl2.type = "checkbox";  // make the element a checkbox
+                  cb_wl2.name = "wl2";      // give it a name we can check on the server side
+                  cb_wl2.value= "wl2";     // make its value "pair"
+                  cb_wl2.id = "wl2";        // sets checbox's id
+
+                  label_wl2.appendChild(cb_wl2);   // add the box to the element
+                  label_wl2.appendChild(description_wl2);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_wl2);
+
+                  //===========================================Check tiempo 7
+                  var label_wl7= document.createElement("label");
+                  var description_wl7 = document.createTextNode("Otros");
+
+                  var cb_wl7 = document.createElement("input");
+
+                  cb_wl7.type = "checkbox";  // make the element a checkbox
+                  cb_wl7.name = "wl6";      // give it a name we can check on the server side
+                  cb_wl7.value= "wl6";     // make its value "pair"
+                  cb_wl7.id = "wl6";        // sets checbox's id
+
+                  label_wl7.appendChild(cb_wl7);   // add the box to the element
+                  label_wl7.appendChild(description_wl7);// add the description to the element
+
+                  // add the label element to your div
+                  document.getElementById('sub_sec').appendChild(label_wl7);
+
+                } // Fin Wireless
+
+              } // Fin funcion
+
+      </script>
+
+    }
+  <div id="general2">
+    <i id="icono_cloud" class="fa fa-cloud-upload fa fw" style="color: whitesmoke"></i>
+  </div>
+  }
